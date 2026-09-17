@@ -1,0 +1,91 @@
+/*
+ * styles.css — Custom styles for the Skill Assessment Portal
+ *
+ * Tailwind handles most layout/utility. This file covers:
+ *  - Focus-visible rings (accessibility)
+ *  - Screen toggle transitions
+ *  - Quiz option card states
+ *  - Progress bar animation
+ *  - Section score bar animation
+ *  - Skip-to-content link
+ */
+
+/* ── Skip-to-content: visible only on keyboard focus ── */
+.skip-link {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  transition: top 0.15s;
+}
+.skip-link:focus {
+  top: 0.5rem;
+}
+
+/*
+ * Focus-visible ring — thick, high-contrast outline so keyboard users
+ * (including those with low vision) can always track focus position.
+ * We intentionally use :focus-visible (not :focus) so mouse clicks
+ * don't produce distracting outlines.
+ */
+*:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* ── Screen visibility ── */
+.screen {
+  display: none;
+}
+.screen.active {
+  display: block;
+}
+
+/* ── Progress bar fill animation ── */
+.progress-fill {
+  transition: width 0.4s ease-in-out;
+}
+
+/* ── Quiz option cards ── */
+.option-card {
+  transition: all 0.15s ease;
+}
+.option-card:hover {
+  border-color: #2563eb;
+  background-color: #f0f7ff;
+}
+.option-card.selected {
+  border-color: #2563eb;
+  background-color: #e0efff;
+  box-shadow: 0 0 0 2px #2563eb;
+}
+
+/* ── Results section score bars ── */
+.section-bar {
+  transition: width 0.6s ease-in-out;
+}
+
+/* ── Education level cards ── */
+.level-card {
+  transition: all 0.15s ease;
+}
+.level-card:hover {
+  border-color: #2563eb;
+  background-color: #f0f7ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+.level-card.selected {
+  border-color: #2563eb;
+  background-color: #e0efff;
+  box-shadow: 0 0 0 2px #2563eb;
+}
+
+/* ── Spinner for submit loading state ── */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.animate-spin {
+  animation: spin 1s linear infinite;
+}

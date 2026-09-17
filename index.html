@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Skill Assessment Portal — Mahatma Phule Apang Prashikshan Kendra</title>
+
+  <!-- Tailwind CSS via CDN (no build step) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'Noto Sans', 'sans-serif'],
+          },
+        },
+      },
+    };
+  </script>
+
+  <!-- Supabase JS Client v2 via CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body class="bg-gray-50 text-gray-900 min-h-screen font-sans antialiased">
+  <!-- Skip-to-content link for screen-reader / keyboard users -->
+  <a href="#main-content" class="skip-link bg-blue-700 text-white px-4 py-2 rounded-b-lg font-semibold text-sm">
+    Skip to main content
+  </a>
+
+  <!-- ======================== HEADER ======================== -->
+  <header class="bg-blue-900 text-white shadow-md" role="banner">
+    <div class="max-w-3xl mx-auto px-4 py-4 flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center text-xl font-bold shrink-0" aria-hidden="true">म</div>
+      <div>
+        <h1 class="text-lg sm:text-xl font-bold leading-tight">Mahatma Phule Apang Prashikshan Kendra</h1>
+        <p class="text-blue-200 text-xs sm:text-sm">Vocational Skill Assessment Portal</p>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================== MAIN CONTENT ======================== -->
+  <main id="main-content" class="max-w-3xl mx-auto px-4 py-6 sm:py-10">
+
+    <!-- ──────────── SCREEN 1: WELCOME ──────────── -->
+    <section id="screen-welcome" class="screen active" role="region" aria-label="Welcome and registration">
+      <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-2">Welcome!</h2>
+        <p class="text-gray-600 mb-6 text-base sm:text-lg">
+          This short assessment covers <strong>5 sections</strong>
+(Basic Computers, English, Aptitude, Logical Reasoning &amp; General Awareness)
+with <strong>20 questions</strong> tailored to your education level, taking roughly
+<strong>10–15 minutes</strong>. Your results will help us recommend the best vocational training pathway for you. 
+        </p>
+
+        <form id="welcome-form" novalidate class="space-y-5">
+          <!-- Full Name -->
+          <div>
+            <label for="input-name" class="block text-sm font-semibold text-gray-700 mb-1">
+              Full Name <span class="text-red-600" aria-hidden="true">*</span>
+              <span class="sr-only">(required)</span>
+            </label>
+            <input
+              type="text"
+              id="input-name"
+              autocomplete="name"
+              required
+              placeholder="e.g. Ramesh Kumar"
+              class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-base focus:border-blue-500 focus:ring-0 transition-colors"
+              aria-describedby="name-error"
+            />
+            <p id="name-error" class="text-red-600 text-sm mt-1 hidden" role="alert">Please enter your full name.</p>
+          </div>
+
+          <!-- Disability / Accommodation Category -->
+          <div>
+            <label for="input-category" class="block text-sm font-semibold text-gray-700 mb-1">
+              Disability / Accommodation Category
+            </label>
+            <select
+              id="input-category"
+              class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-base bg-white focus:border-blue-500 focus:ring-0 transition-colors"
+            >
+              <option value="None/Other">None / Other</option>
+              <option value="Visual">Visual</option>
+              <option value="Hearing">Hearing</option>
+              <option value="Locomotor">Locomotor</option>
+              <option value="Cognitive/Intellectual">Cognitive / Intellectual</option>
+            </select>
+          </div>
+
+          <!-- Additional accommodation notes -->
+          <div>
+            <label for="input-accommodation" class="block text-sm font-semibold text-gray-700 mb-1">
+              Additional Accommodation Needs <span class="text-gray-400 font-normal">(optional)</span>
+            </label>
+            <textarea
+              id="input-accommodation"
+              rows="2"
+              placeholder="e.g. Need screen reader support, extra time, sign language interpreter…"
+              class="w-full border-2 border-gray-300 rounded-lg px-4 py-3 text-base focus:border-blue-500 focus:ring-0 transition-colors resize-y"
+            ></textarea>
+          </div>
+
+          <!-- Start button -->
+          <button
+            type="submit"
+            id="btn-start"
+            disabled
+            class="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg text-lg
+                   hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            aria-describedby="start-hint"
+          >
+            Continue →
+          </button>
+          <p id="start-hint" class="text-sm text-gray-500">Fill in your name above to begin.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ──────────── SCREEN 2: EDUCATION LEVEL ──────────── -->
+    <section id="screen-level" class="screen" role="region" aria-label="Education level selection">
+      <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-2">What is your education level?</h2>
+        <p class="text-gray-600 mb-6 text-base sm:text-lg">
+          Select the highest standard you have studied. We'll tailor the questions to match your level.
+        </p>
+
+        <div id="level-cards" class="space-y-3" role="radiogroup" aria-label="Education level"></div>
+
+        <div class="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <button
+            id="btn-begin-quiz"
+            disabled
+            class="w-full sm:w-auto px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg text-lg
+                   hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Begin Assessment →
+          </button>
+          <p id="level-hint" class="text-sm text-gray-500">Select your education level above to continue.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────── SCREEN 3: QUIZ ──────────── -->
+    <section id="screen-quiz" class="screen" role="region" aria-label="Assessment questions">
+      <!-- Progress -->
+      <div class="mb-6">
+        <div class="flex justify-between items-center mb-2">
+          <span id="quiz-section-label" class="text-sm font-semibold text-blue-700 uppercase tracking-wide"></span>
+          <span id="quiz-progress-text" class="text-sm font-medium text-gray-600" aria-live="polite"></span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="quiz-progress-bar-container">
+          <div id="quiz-progress-bar" class="progress-fill bg-blue-500 h-3 rounded-full" style="width: 0%"></div>
+        </div>
+      </div>
+
+      <!-- Question card -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-10">
+        <h2 id="quiz-question" class="text-xl sm:text-2xl font-bold text-gray-900 mb-6 leading-snug"></h2>
+
+        <div id="quiz-options" class="space-y-3" role="radiogroup" aria-labelledby="quiz-question"></div>
+
+        <div class="mt-8 flex justify-end">
+          <button
+            id="btn-next"
+            disabled
+            class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg text-lg
+                   hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          >
+            Next →
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ──────────── SCREEN 4: RESULTS ──────────── -->
+    <section id="screen-results" class="screen" role="region" aria-label="Assessment results">
+      <div class="bg-white rounded-2xl shadow-lg p-6 sm:p-10">
+        <h2 class="text-2xl sm:text-3xl font-bold text-blue-900 mb-1">Your Results</h2>
+        <p id="result-level" class="text-gray-500 mb-6"></p>
+
+        <!-- Overall score -->
+        <div class="text-center py-6 mb-6 bg-blue-50 rounded-xl">
+          <p class="text-5xl sm:text-6xl font-extrabold text-blue-700" id="result-score"></p>
+          <p class="text-lg text-gray-600 mt-1" id="result-percent"></p>
+        </div>
+
+        <!-- Section breakdown -->
+        <div id="result-sections" class="space-y-4 mb-8"></div>
+
+        <!-- Recommendation -->
+        <div class="border-2 border-blue-200 bg-blue-50 rounded-xl p-5 mb-8">
+          <h3 class="font-bold text-blue-900 text-lg mb-1">🎯 Recommended Training Pathway</h3>
+          <p id="result-recommendation" class="text-gray-800 text-base leading-relaxed"></p>
+        </div>
+
+        <!-- Submit / status -->
+        <div id="submit-area" class="space-y-3">
+          <button
+            id="btn-submit"
+            class="w-full sm:w-auto px-8 py-3 bg-green-600 text-white font-semibold rounded-lg text-lg
+                   hover:bg-green-700 transition-colors flex items-center justify-center gap-2"
+          >
+            Submit &amp; Finish ✓
+          </button>
+          <div id="submit-status" class="hidden text-sm font-medium" role="alert"></div>
+        </div>
+
+        <!-- Restart -->
+        <div class="mt-6 pt-6 border-t border-gray-200">
+          <button
+            id="btn-restart"
+            class="text-blue-600 hover:text-blue-800 font-semibold text-sm underline underline-offset-2 transition-colors"
+          >
+            ↻ Take the assessment again
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ======================== FOOTER ======================== -->
+  <footer class="text-center text-gray-400 text-xs py-6 px-4">
+    © 2026 Mahatma Phule Apang Prashikshan Kendra · Built with care for accessibility
+  </footer>
+
+  <!-- ======================== SCRIPTS ======================== -->
+  <!-- Load order matters: config → question banks → state → render → logic → app -->
+  <script src="js/config.js"></script>
+
+  <!-- Question banks (order among these doesn't matter) -->
+  <script src="js/questions/primary.js"></script>
+  <script src="js/questions/middle.js"></script>
+  <script src="js/questions/secondary.js"></script>
+  <script src="js/questions/higher.js"></script>
+  <script src="js/questions/graduate.js"></script>
+
+  <!-- Core modules -->
+  <script src="js/state.js"></script>
+  <script src="js/render.js"></script>
+  <script src="js/quiz.js"></script>
+  <script src="js/results.js"></script>
+  <script src="js/supabase.js"></script>
+  <script src="js/seed.js"></script>
+
+  <!-- Entry point (event listeners) — must be last -->
+  <script src="js/app.js"></script>
+</body>
+</html>
